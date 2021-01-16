@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Overview from './Overview';
 
 class ItemForm extends Component {
     constructor(props) {
@@ -10,6 +11,7 @@ class ItemForm extends Component {
 
         this.handleChange= this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     handleChange(event) {
@@ -17,26 +19,34 @@ class ItemForm extends Component {
     }
   
     handleSubmit(event) {
-      alert('Item was submitted: ' + this.state.item);
-      this.setState({items: this.state.items.concat(this.state.item)});
+      this.setState({
+        items: this.state.items.concat(this.state.item),
+        item: ''
+      });
       event.preventDefault();
     }
 
+    handleDelete(item) {
+      let data = this.state.items.filter(i => i !== item);
+      this.setState({ items: data });
+    }
+
     render() {
+      const { item, items } = this.state;
+
         return (
           <>
           <form onSubmit={this.handleSubmit}>
             <label>
               Items:
-              <input type="text" value={this.state.item} onChange={this.handleChange} />
+              <input type="text" value={item} onChange={this.handleChange} />
             </label>
             <input type="submit" value="Submit" />
           </form>
-          <div>
-           {this.state.items.map((item, index) =>
-             <li key={index}>{item}</li>
-            )}
-          </div>
+            <Overview 
+              items={items}
+              handleDelete={this.handleDelete}
+            />
           </>
         );
     }
